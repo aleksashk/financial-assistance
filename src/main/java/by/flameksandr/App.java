@@ -2,10 +2,13 @@ package by.flameksandr;
 
 import java.sql.*;
 
+import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
+
 public class App {
     public static void main(String[] args) throws SQLException {
         String email = "user1@example.com";
         String password = "password";
+        String passwordHex = md5Hex(password);
 
         Connection con = DriverManager.getConnection(
                 "jdbc:postgresql://localhost:5432/finance_assistance",
@@ -22,11 +25,11 @@ public class App {
         }
         PreparedStatement ps = con.prepareStatement("select * from user_service where email=? and password=?");
         ps.setString(1, email);
-        ps.setString(2, password);
+        ps.setString(2, passwordHex);
         rs = ps.executeQuery();
-        if(rs.next()){
+        if (rs.next()) {
             System.out.println("Hello " + rs.getString("email"));
-        }else {
+        } else {
             System.out.println("Access denied!!!!");
         }
         statement.close();
